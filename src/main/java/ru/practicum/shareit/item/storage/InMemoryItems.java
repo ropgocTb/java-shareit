@@ -57,7 +57,7 @@ public class InMemoryItems implements Items {
         if (item.getName() != null) {
             editedItem.setName(item.getName());
         }
-        if (item.getAvailable() != editedItem.getAvailable()) {
+        if (item.getAvailable() != null && item.getAvailable() != editedItem.getAvailable()) {
             editedItem.setAvailable(item.getAvailable());
         }
 
