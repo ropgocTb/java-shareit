@@ -7,6 +7,8 @@ import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.storage.Users;
 
+import java.util.List;
+
 @Service
 public class UserServiceImpl implements UserService {
     private final Users storage;
@@ -32,6 +34,13 @@ public class UserServiceImpl implements UserService {
     public UserDto getUser(Long id) {
         return UserMapper.toUserDto(storage.getUser(id)
                 .orElseThrow(() -> new NotFoundException("Пользователь с таким id не найден")));
+    }
+
+    @Override
+    public List<UserDto> getUsers() {
+        return storage.getUsers().stream()
+                .map(UserMapper::toUserDto)
+                .toList();
     }
 
     @Override

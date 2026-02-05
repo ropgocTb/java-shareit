@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
 
+import java.util.List;
+
 /**
  * TODO Sprint add-controllers.
  */
@@ -17,6 +19,11 @@ public class UserController {
     @GetMapping("/{id}")
     public UserDto getUser(@PathVariable(name = "id") Long id) {
         return service.getUser(id);
+    }
+
+    @GetMapping
+    public List<UserDto> getUsers() {
+        return service.getUsers();
     }
 
     @PostMapping

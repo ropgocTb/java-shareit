@@ -5,10 +5,7 @@ import ru.practicum.shareit.exception.AlreadyTakenException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.user.model.User;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Component("InMemoryUsers")
 public class InMemoryUsers implements Users {
@@ -39,6 +36,11 @@ public class InMemoryUsers implements Users {
     @Override
     public Optional<User> getUser(Long id) {
         return Optional.ofNullable(users.get(id));
+    }
+
+    @Override
+    public List<User> getUsers() {
+        return users.values().stream().toList();
     }
 
     @Override
