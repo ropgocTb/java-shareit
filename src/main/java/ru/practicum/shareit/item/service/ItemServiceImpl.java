@@ -2,14 +2,17 @@ package ru.practicum.shareit.item.service;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemWithCommentsDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.storage.Items;
 
 import java.util.List;
 
-@Service
+@Service("ItemServiceImpl")
 public class ItemServiceImpl implements ItemService {
     private final Items storage;
 
@@ -23,9 +26,11 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> getItems(Long ownerId) {
+    public List<ItemWithCommentsDto> getItems(Long ownerId) {
+        //пустой список броней для хранилища в памяти
         return storage.getItems(ownerId).stream()
-                .map(ItemMapper::toItemDto)
+                .map(item -> ItemMapper.toItemWithCommentsDto(item,
+                        Booking.builder().build(), Booking.builder().build(), List.of()))
                 .toList();
     }
 
@@ -36,10 +41,12 @@ public class ItemServiceImpl implements ItemService {
                 .toList();
     }
 
+    //изменение сигнатуры в сервисе требует, а тз нет
     @Override
-    public ItemDto getItem(Long id) {
-        return ItemMapper.toItemDto(storage.getItem(id)
-                .orElseThrow(() -> new NotFoundException("Вещь с таким id не найдена")));
+    public ItemWithCommentsDto getItem(Long id) {
+        return ItemMapper.toItemWithCommentsDto(storage.getItem(id)
+                        .orElseThrow(() -> new NotFoundException("Вещь с таким id не найдена")),
+                Booking.builder().build(), Booking.builder().build(), List.of());
     }
 
     @Override
@@ -47,5 +54,10 @@ public class ItemServiceImpl implements ItemService {
         getItem(id);
         itemDto.setId(id);
         return ItemMapper.toItemDto(storage.editItem(id, ownerId, ItemMapper.toItem(itemDto)));
+    }
+
+    @Override
+    public CommentDto addComment(Long userId, Long itemId, String text) {
+        return CommentDto.builder().build();
     }
 }
