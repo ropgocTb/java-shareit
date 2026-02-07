@@ -43,4 +43,22 @@ public class ExceptionHandler {
                 "errorMessage", e.getMessage()
         );
     }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> handleItemUnavailable(final ItemUnavailableException e) {
+        return Map.of(
+                "error", "Предмет недоступен для брони",
+                "errorMessage", e.getMessage()
+        );
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> handleInvalidRequestParam(final InvalidRequestParamException e) {
+        return Map.of(
+                "error", "Неверный параметр запроса",
+                "errorMessage", e.getMessage()
+        );
+    }
 }
