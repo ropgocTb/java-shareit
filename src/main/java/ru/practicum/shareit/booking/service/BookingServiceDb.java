@@ -87,9 +87,15 @@ public class BookingServiceDb implements BookingService {
     }
 
     @Override
-    public BookingDto getBooking(Long id) {
-        return BookingMapper.toBookingDto(repository.findById(id)
+    public BookingDto getBooking(Long userId, Long id) {
+        BookingDto bookingDto = BookingMapper.toBookingDto(repository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Бронирование с таким id не найдено")));
+
+        if (!bookingDto.getBooker().getId().equals(userId) && !bookingDto.getItem().getOwner().getId().equals(userId))
+            throw new AccessException("Просматривать информацию о бронировании могут только" +
+                    " автор бронирования и владелец предмета");
+
+        return bookingDto;
     }
 
     @Override
@@ -99,7 +105,7 @@ public class BookingServiceDb implements BookingService {
         List<Booking> bookings = new ArrayList<>();
 
         bookings = switch (state) {
-            case "ALL" -> repository.findAllByBooker_Id(id);
+            case "ALL" -> repository.findAllByBooker_Id(id, sort);
             case "CURRENT" -> repository.findAllByBooker_IdAndStartIsBeforeAndEndIsAfter(id,
                     LocalDateTime.now(),
                     LocalDateTime.now(),
@@ -108,7 +114,7 @@ public class BookingServiceDb implements BookingService {
             case "FUTURE" -> repository.findAllByBooker_IdAndStartIsAfter(id, LocalDateTime.now(), sort);
             case "WAITING" -> repository.findAllByBooker_IdAndStatusLike(id, Status.WAITING, sort);
             case "REJECTED" -> repository.findAllByBooker_IdAndStatusLike(id, Status.REJECTED, sort);
-            case null -> repository.findAllByBooker_Id(id);
+            case null -> repository.findAllByBooker_Id(id, sort);
             default -> bookings;
         };
 
@@ -127,7 +133,7 @@ public class BookingServiceDb implements BookingService {
             throw new NotFoundException("У пользователя с этим id нет предметов");
 
         bookings = switch (state) {
-            case "ALL" -> repository.findAllByItem_Owner_Id(id);
+            case "ALL" -> repository.findAllByItem_Owner_Id(id, sort);
             case "CURRENT" -> repository.findAllByItem_Owner_IdAndStartIsBeforeAndEndIsAfter(id,
                     LocalDateTime.now(),
                     LocalDateTime.now(),
@@ -136,7 +142,7 @@ public class BookingServiceDb implements BookingService {
             case "FUTURE" -> repository.findAllByItem_Owner_IdAndStartIsAfter(id, LocalDateTime.now(), sort);
             case "WAITING" -> repository.findAllByItem_Owner_IdAndStatusLike(id, Status.WAITING, sort);
             case "REJECTED" -> repository.findAllByItem_Owner_IdAndStatusLike(id, Status.REJECTED, sort);
-            case null -> repository.findAllByItem_Owner_Id(id);
+            case null -> repository.findAllByItem_Owner_Id(id, sort);
             default -> bookings;
         };
 

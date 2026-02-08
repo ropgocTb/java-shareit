@@ -12,7 +12,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     //findByBookerId
     //state=ALL
-    List<Booking> findAllByBooker_Id(Long bookerId);
+    List<Booking> findAllByBooker_Id(Long bookerId, Sort sort);
 
     //state=CURRENT
     List<Booking> findAllByBooker_IdAndStartIsBeforeAndEndIsAfter(Long bookerId, LocalDateTime start,
@@ -29,7 +29,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     //findByItemOwnerId
     //state=ALL
-    List<Booking> findAllByItem_Owner_Id(Long ownerId);
+    List<Booking> findAllByItem_Owner_Id(Long ownerId, Sort sort);
 
     //state=CURRENT
     List<Booking> findAllByItem_Owner_IdAndStartIsBeforeAndEndIsAfter(Long ownerId, LocalDateTime start,
