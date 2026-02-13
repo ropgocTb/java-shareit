@@ -9,7 +9,7 @@ import ru.practicum.shareit.user.storage.Users;
 
 import java.util.List;
 
-@Service
+@Service("UserServiceImpl")
 public class UserServiceImpl implements UserService {
     private final Users storage;
 
