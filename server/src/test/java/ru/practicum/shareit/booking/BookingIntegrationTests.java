@@ -324,12 +324,21 @@ public class BookingIntegrationTests {
     }
 
     @Test
-    public void editBookingByWrongUserTestShouldThrowAccessException() throws Exception {
+    public void editBookingByWrongUserTestShouldThrowInvalidParamException() throws Exception {
         Booking savedBooking = bookingRepository.save(booking);
 
         mvc.perform(patch("/bookings/{id}?approved={approved}", savedBooking.getId(), true)
                         .header("X-Sharer-User-Id", userMakesBooking.getId()))
                 .andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void editBookingWithWrongParamShouldThrowValidationException() throws Exception {
+        Booking savedBooking = bookingRepository.save(booking);
+
+        mvc.perform(patch("/bookings/{id}?approved={approved}", savedBooking.getId(), "asdfasdf")
+                        .header("X-Sharer-User-Id", userWithItem.getId()))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
