@@ -157,11 +157,8 @@ public class ItemServiceDb implements ItemService {
                 .text(text)
                 .created(LocalDateTime.now())
                 .build();
-
-        //если не добавить какое то количество времени то тесты фейлятся
-        //из-за того что в них одновременно и заканчивается бронь и проверяется наличие завершенной брони
         List<Booking> finishedRents = bookingRepository.findAllByItem_IdAndBooker_IdAndEndIsBefore(itemId,
-                userId, LocalDateTime.now().plusHours(3));
+                userId, LocalDateTime.now());
 
         if (finishedRents.isEmpty())
             throw new InvalidRequestParamException("Пользователь с id " + userId +
