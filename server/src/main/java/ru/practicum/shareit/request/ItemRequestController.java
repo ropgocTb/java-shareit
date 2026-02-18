@@ -1,5 +1,6 @@
 package ru.practicum.shareit.request;
 
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.service.ItemRequestService;
@@ -26,8 +27,8 @@ public class ItemRequestController {
 
     //получить список запросов созданных другими пользователями
     @GetMapping("/all")
-    public List<ItemRequestDto> getAllRequests() {
-        return service.getRequests();
+    public List<ItemRequestDto> getAllRequests(@RequestHeader("X-Sharer-User-Id") Long userId) {
+        return service.getRequests(userId);
     }
 
     //получить данные о конкретном запросе вместе с данными об ответах на него
@@ -39,7 +40,7 @@ public class ItemRequestController {
     //сделать новый запрос вещи
     @PostMapping
     public ItemRequestDto postRequest(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                      @RequestBody ItemRequestDto itemRequestDto) {
+                                      @Valid @RequestBody ItemRequestDto itemRequestDto) {
         return service.addRequest(userId, itemRequestDto);
     }
 }

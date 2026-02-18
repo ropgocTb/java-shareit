@@ -66,7 +66,7 @@ public class ItemRequestServiceDb implements ItemRequestService {
     }
 
     @Override
-    public List<ItemRequestDto> getRequests() {
+    public List<ItemRequestDto> getRequests(Long userId) {
         List<ItemRequestDto> itemRequests = new ArrayList<>();
 
         Sort sortByCreated = Sort.by(Sort.Direction.DESC, "created");
@@ -76,6 +76,7 @@ public class ItemRequestServiceDb implements ItemRequestService {
             Page<ItemRequest> itemRequestPage = itemRequestRepository.findAll(page);
 
             itemRequests.addAll(itemRequestPage.getContent().stream()
+                    .filter(itemRequest -> !itemRequest.getRequestor().getId().equals(userId))
                     .map(itemRequest -> {
                         List<Item> answersForRequest = itemRepository.findAllByRequest_Id(itemRequest.getId());
 

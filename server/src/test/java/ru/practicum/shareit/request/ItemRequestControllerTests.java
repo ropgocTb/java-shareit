@@ -81,15 +81,16 @@ public class ItemRequestControllerTests {
                 .requestorId(1L)
                 .build();
 
-        when(itemRequestServiceDb.getRequests()).thenReturn(List.of(itemRequestDto, itemRequestDto1));
+        when(itemRequestServiceDb.getRequests(anyLong())).thenReturn(List.of(itemRequestDto, itemRequestDto1));
 
-        mvc.perform(get("/requests/all"))
+        mvc.perform(get("/requests/all")
+                        .header("X-Sharer-User-Id", 1L))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(2)))
                 .andExpect(jsonPath("$[0].id", is(itemRequestDto.getId()), Long.class))
                 .andExpect(jsonPath("$[1].id", is(itemRequestDto1.getId()), Long.class));
 
-        verify(itemRequestServiceDb, times(1)).getRequests();
+        verify(itemRequestServiceDb, times(1)).getRequests(anyLong());
     }
 
     @Test

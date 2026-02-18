@@ -129,7 +129,8 @@ public class RequestIntegrationTests {
                 .andExpect(jsonPath("$[0].requestorId", is(savedUser.getId()), Long.class))
                 .andExpect(jsonPath("$[0].created").exists());
 
-        mvc.perform(get("/requests/all"))
+        mvc.perform(get("/requests/all")
+                        .header("X-Sharer-User-Id", 1L))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(2)))
                 .andExpect(jsonPath("$[0].id", is(2L), Long.class))
