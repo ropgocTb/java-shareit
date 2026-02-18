@@ -1,5 +1,6 @@
 package ru.practicum.shareit.request;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -24,8 +25,8 @@ public class ItemRequestController {
 
     //получить список запросов созданных другими пользователями
     @GetMapping("/all")
-    public ResponseEntity<Object> getAllRequests() {
-        return itemRequestClient.getRequests();
+    public ResponseEntity<Object> getAllRequests(@RequestHeader("X-Sharer-User-Id") Long userId) {
+        return itemRequestClient.getRequests(userId);
     }
 
     //получить данные о конкретном запросе вместе с данными об ответах на него
@@ -37,7 +38,7 @@ public class ItemRequestController {
     //сделать новый запрос вещи
     @PostMapping
     public ResponseEntity<Object> postRequest(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                      @RequestBody ItemRequestDto itemRequestDto) {
+                                      @Valid @RequestBody ItemRequestDto itemRequestDto) {
         return itemRequestClient.addRequest(userId, itemRequestDto);
     }
 }
